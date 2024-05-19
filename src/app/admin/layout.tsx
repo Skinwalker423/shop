@@ -1,4 +1,4 @@
-import { Nav } from "@/components/Nav";
+import { Nav, NavLink } from "@/components/Nav";
 
 const AdminLayout = ({
   children,
@@ -7,7 +7,14 @@ const AdminLayout = ({
 }>) => {
   return (
     <>
-      <Nav />
+      <Nav>
+        <NavLink href={"/admin"}>Dashboard</NavLink>
+        <NavLink href={"/admin/products"}>Products</NavLink>
+        <NavLink href={"/admin/customers"}>
+          Customers
+        </NavLink>
+        <NavLink href={"/admin/sales"}>Sales</NavLink>
+      </Nav>
       <div className='container my-6'>{children}</div>
     </>
   );
