@@ -2,57 +2,43 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 
-const AdminPage = () => {
+const AdminPage = async () => {
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-      <Card>
-        <CardHeader>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>
-            Card Description
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>
-            Card Description
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>
-            Card Description
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
+      <DashBoardCard
+        title='User'
+        description='test'
+        body={"test"}
+      />
     </div>
+  );
+};
+
+interface DashboardProps {
+  title: string;
+  description: string;
+  body: string;
+}
+
+const DashBoardCard = ({
+  title,
+  description,
+  body,
+}: DashboardProps) => {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>{body}</p>
+      </CardContent>
+    </Card>
   );
 };
 
