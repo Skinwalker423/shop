@@ -10,22 +10,33 @@ import db from "../../../db";
 const getSalesData = async () => {
   "use server";
 
-  const res = await db.order.count();
+  const data = await db.order.aggregate({
+    _count: true,
+    _sum: { pricePaidInCens: true },
+  });
 
-  console.log("res", res);
+  console.log("res", data);
 
-  return res;
+  return {
+    amount: data._sum.pricePaidInCens || 0,
+    count: data._count,
+  };
 };
 
 const AdminPage = async () => {
-  const count = await getSalesData();
+  const { amount, count } = await getSalesData();
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
       <DashBoardCard
-        title='Oders'
+        title='Total Orders'
         description='Number of active orders'
         body={count}
+      />
+      <DashBoardCard
+        title='Total Sales'
+        description='total amount'
+        body={`$ ${amount / 100}`}
       />
     </div>
   );
