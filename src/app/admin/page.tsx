@@ -5,14 +5,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import db from "../../../db";
+
+const getSalesData = async () => {
+  "use server";
+
+  const res = await db.order.count();
+
+  console.log("res", res);
+
+  return res;
+};
 
 const AdminPage = async () => {
+  const count = await getSalesData();
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
       <DashBoardCard
-        title='User'
-        description='test'
-        body={"test"}
+        title='Oders'
+        description='Number of active orders'
+        body={count}
       />
     </div>
   );
@@ -21,7 +34,7 @@ const AdminPage = async () => {
 interface DashboardProps {
   title: string;
   description: string;
-  body: string;
+  body: string | number;
 }
 
 const DashBoardCard = ({
