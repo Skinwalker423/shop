@@ -6,6 +6,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import db from "../../../db";
+import {
+  formatCurrency,
+  formatNumber,
+} from "@/lib/formatter";
 
 const getSalesData = async () => {
   "use server";
@@ -26,17 +30,24 @@ const getSalesData = async () => {
 const AdminPage = async () => {
   const { amount, count } = await getSalesData();
 
+  const averageSalesPerCustomer = formatCurrency(
+    amount / count
+  );
+  const fomattedAmount = formatCurrency(amount);
+  const formattedNumber = formatNumber(count);
+  const orders = count === 1 ? " Order" : " Orders";
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
       <DashBoardCard
-        title='Total Orders'
-        description='Number of active orders'
-        body={count}
+        title='Sales'
+        description={formattedNumber + orders}
+        body={fomattedAmount}
       />
       <DashBoardCard
-        title='Total Sales'
-        description='total amount'
-        body={`$ ${amount / 100}`}
+        title='Customers'
+        description='test'
+        body={averageSalesPerCustomer + " Average Sales"}
       />
     </div>
   );
