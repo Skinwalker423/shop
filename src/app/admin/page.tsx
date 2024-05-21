@@ -27,14 +27,36 @@ const getSalesData = async () => {
   };
 };
 
+const getUserData = async () => {
+  "use server";
+
+  const [userCount, totalSales] = await Promise.all([
+    db.user.count(),
+    db.order.aggregate({
+      _sum: {
+        pricePaidInCens: true,
+      },
+    }),
+  ]);
+
+  const avg = totalSales._sum.pricePaidInCens
+    ? totalSales._sum.pricePaidInCens / userCount
+    : 0;
+
+  return {
+    totalUsers: userCount,
+    averageValuePerUser: avg,
+  };
+};
+
 const AdminPage = async () => {
   const { amount, count } = await getSalesData();
+  const { totalUsers, averageValuePerUser } =
+    await getUserData();
 
-  const averageSalesPerCustomer = formatCurrency(
-    amount / count
-  );
   const fomattedAmount = formatCurrency(amount);
   const formattedNumber = formatNumber(count);
+  const formattedUserCount = formatNumber(totalUsers);
   const orders = count === 1 ? " Order" : " Orders";
 
   return (
@@ -46,8 +68,11 @@ const AdminPage = async () => {
       />
       <DashBoardCard
         title='Customers'
-        description='test'
-        body={averageSalesPerCustomer + " Average Sales"}
+        body={formattedUserCount}
+        description={
+          formatCurrency(averageValuePerUser) +
+          " Average Sales per customer"
+        }
       />
     </div>
   );
