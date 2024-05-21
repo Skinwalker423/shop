@@ -5,49 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import db from "../../../db";
 import {
   formatCurrency,
   formatNumber,
 } from "@/lib/formatter";
-
-const getSalesData = async () => {
-  "use server";
-
-  const data = await db.order.aggregate({
-    _count: true,
-    _sum: { pricePaidInCens: true },
-  });
-
-  console.log("res", data);
-
-  return {
-    amount: data._sum.pricePaidInCens || 0,
-    count: data._count,
-  };
-};
-
-const getUserData = async () => {
-  "use server";
-
-  const [userCount, totalSales] = await Promise.all([
-    db.user.count(),
-    db.order.aggregate({
-      _sum: {
-        pricePaidInCens: true,
-      },
-    }),
-  ]);
-
-  const avg = totalSales._sum.pricePaidInCens
-    ? totalSales._sum.pricePaidInCens / userCount
-    : 0;
-
-  return {
-    totalUsers: userCount,
-    averageValuePerUser: avg,
-  };
-};
+import { getUserData } from "@/actions/users";
+import { getSalesData } from "@/actions/orders";
 
 const AdminPage = async () => {
   const { amount, count } = await getSalesData();
