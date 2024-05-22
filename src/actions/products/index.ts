@@ -22,3 +22,8 @@ export const getProductsdata = async () => {
     inactiveProducts,
   };
 };
+
+export const getAllProducts = async () => {
+  const data = await db.product.findMany({});
+  return data;
+};
