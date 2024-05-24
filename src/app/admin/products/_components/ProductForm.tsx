@@ -8,18 +8,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency } from "@/lib/formatter";
 import { addProduct } from "@/actions/products";
+import { useFormState, useFormStatus } from "react-dom";
 
 export const ProductForm = () => {
   const [priceInCents, setPriceInCents] =
-    useState<number>();
-
-  const onSubmit = () => {};
+    useState<number>(0);
+  const [error, action] = useFormState(addProduct, {});
 
   return (
-    <form action={addProduct} className='space-y-8'>
+    <form action={action} className='space-y-8'>
       <div className='space-y-2'>
         <Label htmlFor='name'>Name</Label>
         <Input id='name' name='name' type='text' required />
+        {error?.name && <div>{error.name}</div>}
       </div>
       <div className='space-y-2'>
         <Label htmlFor='price'>Price in cents</Label>
@@ -28,12 +29,12 @@ export const ProductForm = () => {
           name='price'
           type='number'
           required
+          value={priceInCents}
           onChange={(e) =>
-            setPriceInCents(
-              Number(e.target.value) || undefined
-            )
+            setPriceInCents(Number(e.target.value) || 0)
           }
         />
+        {error?.price && <div>{error.price}</div>}
         <div className='text-muted-foreground'>
           {formatCurrency((priceInCents || 0) / 100)}
         </div>
@@ -46,10 +47,14 @@ export const ProductForm = () => {
           required
           placeholder='A short description of the product to add'
         />
+        {error?.description && (
+          <div>{error.description}</div>
+        )}
       </div>
       <div className='space-y-2'>
         <Label htmlFor='file'>File</Label>
         <Input type='file' id='file' name='file' required />
+        {error?.file && <div>{error.file}</div>}
       </div>
       <div className='space-y-2'>
         <Label htmlFor='image'>Image</Label>
@@ -59,9 +64,19 @@ export const ProductForm = () => {
           name='image'
           required
         />
+        {error?.image && <div>{error.image}</div>}
       </div>
-
-      <Button type='submit'>Add</Button>
+      <SubmitButton />
     </form>
+  );
+};
+
+const SubmitButton = () => {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button disabled={pending} type='submit'>
+      {pending ? "Saving..." : "Save"}
+    </Button>
   );
 };

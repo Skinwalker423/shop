@@ -51,7 +51,7 @@ const ProductsPage = async () => {
           {products.length > 0 &&
             products.map((product) => {
               return (
-                <TableRow>
+                <TableRow key={product.id}>
                   <TableCell className='font-medium'>
                     {product.isAvailableForPurchase
                       ? "✅"
