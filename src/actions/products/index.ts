@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import db from "../../../db";
 import fs from "fs/promises";
+import { redirect } from "next/navigation";
 
 export const getProductsdata = async () => {
   const [activeProducts, inactiveProducts] =
@@ -59,9 +60,22 @@ const addProductSchema = z.object({
 });
 
 export const addProduct = async (formData: FormData) => {
-  const parsed = addProductSchema.safeParse(
-    Object.fromEntries(formData.entries())
-  );
+  const name = formData.get("name")?.toString();
+  const price = formData.get("price")?.toString() || "";
+  const description = formData
+    .get("description")
+    ?.toString();
+
+  const file = formData.get("file");
+  const image = formData.get("image");
+
+  const parsed = addProductSchema.safeParse({
+    name,
+    price: parseInt(price),
+    description,
+    file,
+    image,
+  });
 
   console.log("parsed data", parsed.error);
 
@@ -88,11 +102,11 @@ export const addProduct = async (formData: FormData) => {
       data.image.name
     }`;
     await fs.writeFile(
-      filePath,
+      `public${imagePath}`,
       Buffer.from(await data.image.arrayBuffer())
     );
 
-    db.product.create({
+    await db.product.create({
       data: {
         name: data.name,
         description: data.description,
@@ -102,9 +116,7 @@ export const addProduct = async (formData: FormData) => {
       },
     });
 
-    return {
-      success: "Successfully added product",
-    };
+    redirect("/admin/products");
   }
 
   // const data = await db.product.create({
