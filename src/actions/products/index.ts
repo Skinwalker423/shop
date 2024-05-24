@@ -59,7 +59,10 @@ const addProductSchema = z.object({
   image: imageSchema,
 });
 
-export const addProduct = async (formData: FormData) => {
+export const addProduct = async (
+  previousState: unknown,
+  formData: FormData
+) => {
   const name = formData.get("name")?.toString();
   const price = formData.get("price")?.toString() || "";
   const description = formData
@@ -80,9 +83,7 @@ export const addProduct = async (formData: FormData) => {
   console.log("parsed data", parsed.error);
 
   if (parsed.error) {
-    return {
-      error: parsed.error.message,
-    };
+    return parsed.error.formErrors.fieldErrors;
   }
 
   if (parsed.success) {
@@ -113,6 +114,7 @@ export const addProduct = async (formData: FormData) => {
         priceInCents: data.price,
         filePath,
         imagePath,
+        isAvailableForPurchase: false,
       },
     });
 
