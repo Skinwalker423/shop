@@ -9,7 +9,11 @@ import {
 } from "@/components/ui/table";
 import { getAllProducts } from "@/actions/products";
 import { formatCurrency } from "@/lib/formatter";
-import { EllipsisVertical } from "lucide-react";
+import {
+  CheckCircle2,
+  EllipsisVertical,
+  XCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const ProductsTable = async () => {
@@ -43,9 +47,21 @@ export const ProductsTable = async () => {
             return (
               <TableRow key={product.id}>
                 <TableCell className='font-medium'>
-                  {product.isAvailableForPurchase
-                    ? "✅"
-                    : "❎"}
+                  {product.isAvailableForPurchase ? (
+                    <>
+                      <CheckCircle2 color='green' />
+                      <span className='sr-only'>
+                        Available
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <XCircle color='red' />
+                      <span className='sr-only'>
+                        Not Available
+                      </span>
+                    </>
+                  )}
                 </TableCell>
                 <TableCell className='font-medium'>
                   {product.name}
@@ -53,11 +69,14 @@ export const ProductsTable = async () => {
                 <TableCell>
                   {formatCurrency(product.priceInCents)}
                 </TableCell>
-                <TableCell>{product.id}</TableCell>
+                <TableCell>
+                  {product._count.orders}
+                </TableCell>
                 <TableCell className='font-medium'>
-                  <Button variant={"outline"} size={"sm"}>
-                    <EllipsisVertical />
-                  </Button>
+                  <EllipsisVertical />
+                  <span className='sr-only'>
+                    More Options
+                  </span>
                 </TableCell>
               </TableRow>
             );
