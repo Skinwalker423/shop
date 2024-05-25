@@ -14,6 +14,9 @@ import { Button } from "@/components/ui/button";
 
 export const ProductsTable = async () => {
   const products = await getAllProducts();
+
+  if (!products.length) return <p>No Products Found</p>;
+
   return (
     <Table>
       <TableCaption>
