@@ -28,7 +28,18 @@ export const getProductsdata = async () => {
 };
 
 export const getAllProducts = async () => {
-  const data = await db.product.findMany({});
+  const data = await db.product.findMany({
+    select: {
+      name: true,
+      isAvailableForPurchase: true,
+      id: true,
+      priceInCents: true,
+      _count: { select: { orders: true } },
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
   return data;
 };
 
