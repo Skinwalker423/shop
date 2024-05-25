@@ -7,6 +7,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getAllProducts } from "@/actions/products";
 import { formatCurrency } from "@/lib/formatter";
 import {
@@ -14,7 +22,7 @@ import {
   EllipsisVertical,
   XCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const ProductsTable = async () => {
   const products = await getAllProducts();
@@ -73,10 +81,42 @@ export const ProductsTable = async () => {
                   {product._count.orders}
                 </TableCell>
                 <TableCell className='font-medium'>
-                  <EllipsisVertical />
-                  <span className='sr-only'>
-                    More Options
-                  </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <EllipsisVertical />
+                      <span className='sr-only'>
+                        More Options
+                      </span>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>
+                        Options
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <a
+                          download
+                          href={`/admin/products/${product.id}/download`}
+                        >
+                          Download
+                        </a>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`/admin/products/${product.id}/edit`}
+                        >
+                          Edit
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`/admin/products/${product.id}/delete`}
+                        >
+                          Delete
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             );
