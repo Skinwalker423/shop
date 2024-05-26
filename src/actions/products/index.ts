@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import db from "../../../db";
 import fs from "fs/promises";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export const getProductsdata = async () => {
   const [activeProducts, inactiveProducts] =
@@ -156,9 +156,11 @@ export const toggleProductAvailability = async (
 };
 
 export const deleteProductById = async (id: string) => {
-  await db.product.delete({
+  const product = await db.product.delete({
     where: {
       id,
     },
   });
+
+  if (!product) return notFound();
 };
