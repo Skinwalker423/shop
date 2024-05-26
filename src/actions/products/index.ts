@@ -154,3 +154,11 @@ export const toggleProductAvailability = async (
     },
   });
 };
+
+export const deleteProductById = async (id: string) => {
+  await db.product.delete({
+    where: {
+      id,
+    },
+  });
+};
