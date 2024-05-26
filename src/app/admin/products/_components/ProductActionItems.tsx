@@ -1,6 +1,9 @@
 "use client";
 
-import { toggleProductAvailability } from "@/actions/products";
+import {
+  deleteProductById,
+  toggleProductAvailability,
+} from "@/actions/products";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import React, { useTransition } from "react";
 
@@ -30,6 +33,31 @@ export const ActiveToggleDropdownItem = ({
       {isAvailableForPurchase
         ? "Deactivate Product"
         : "Activate Product"}
+    </DropdownMenuItem>
+  );
+};
+
+interface DeleteDropdownItemProps {
+  id: string;
+  disabled: boolean;
+}
+
+export const DeleteDropdownItem = ({
+  id,
+  disabled,
+}: DeleteDropdownItemProps) => {
+  const [isPending, startTransition] = useTransition();
+
+  return (
+    <DropdownMenuItem
+      disabled={isPending || disabled}
+      onClick={() => {
+        startTransition(async () => {
+          await deleteProductById(id);
+        });
+      }}
+    >
+      Delete
     </DropdownMenuItem>
   );
 };
