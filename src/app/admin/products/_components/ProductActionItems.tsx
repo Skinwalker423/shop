@@ -1,3 +1,5 @@
+"use client";
+
 import { toggleProductAvailability } from "@/actions/products";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import React, { useTransition } from "react";
@@ -15,6 +17,7 @@ export const ActiveToggleDropdownItem = ({
 
   return (
     <DropdownMenuItem
+      disabled={isPending}
       onClick={() => {
         startTransition(async () => {
           await toggleProductAvailability(
