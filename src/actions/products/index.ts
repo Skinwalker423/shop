@@ -140,3 +140,17 @@ export const addProduct = async (
   // });
   // return data;
 };
+
+export const toggleProductAvailability = async (
+  id: string,
+  isAvailableForPurchase: boolean
+): Promise<void> => {
+  await db.product.update({
+    where: {
+      id,
+    },
+    data: {
+      isAvailableForPurchase,
+    },
+  });
+};
