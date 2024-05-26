@@ -23,7 +23,10 @@ import {
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { ActiveToggleDropdownItem } from "./ProductActionItems";
+import {
+  ActiveToggleDropdownItem,
+  DeleteDropdownItem,
+} from "./ProductActionItems";
 
 export const ProductsTable = async () => {
   const products = await getAllProducts();
@@ -121,6 +124,11 @@ export const ProductsTable = async () => {
                         isAvailableForPurchase={
                           product.isAvailableForPurchase
                         }
+                      />
+                      <DropdownMenuSeparator />
+                      <DeleteDropdownItem
+                        id={product.id}
+                        disabled={product._count.orders > 0}
                       />
                     </DropdownMenuContent>
                   </DropdownMenu>
