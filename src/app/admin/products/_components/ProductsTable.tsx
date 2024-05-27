@@ -112,13 +112,7 @@ export const ProductsTable = async () => {
                           Edit
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/admin/products/${product.id}/delete`}
-                        >
-                          Delete
-                        </Link>
-                      </DropdownMenuItem>
+
                       <ActiveToggleDropdownItem
                         id={product.id}
                         isAvailableForPurchase={
