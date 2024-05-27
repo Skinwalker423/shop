@@ -5,6 +5,7 @@ import {
   toggleProductAvailability,
 } from "@/actions/products";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 import React, { useTransition } from "react";
 
 interface ActiveToggleDropdownItemProps {
@@ -17,6 +18,7 @@ export const ActiveToggleDropdownItem = ({
   isAvailableForPurchase,
 }: ActiveToggleDropdownItemProps) => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   return (
     <DropdownMenuItem
@@ -27,6 +29,7 @@ export const ActiveToggleDropdownItem = ({
             id,
             !isAvailableForPurchase
           );
+          router.refresh();
         });
       }}
     >
