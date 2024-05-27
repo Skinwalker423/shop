@@ -163,4 +163,7 @@ export const deleteProductById = async (id: string) => {
   });
 
   if (!product) return notFound();
+
+  await fs.unlink(product.filePath);
+  await fs.unlink(`public${product.imagePath}`);
 };
