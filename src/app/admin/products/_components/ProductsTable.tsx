@@ -61,14 +61,14 @@ export const ProductsTable = async () => {
                 <TableCell className='font-medium'>
                   {product.isAvailableForPurchase ? (
                     <>
-                      <CheckCircle2 color='green' />
+                      <CheckCircle2 className='stroke-green-500' />
                       <span className='sr-only'>
                         Available
                       </span>
                     </>
                   ) : (
                     <>
-                      <XCircle color='red' />
+                      <XCircle className='stroke-destructive' />
                       <span className='sr-only'>
                         Not Available
                       </span>

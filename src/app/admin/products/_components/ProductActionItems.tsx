@@ -50,6 +50,7 @@ export const DeleteDropdownItem = ({
   disabled,
 }: DeleteDropdownItemProps) => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   return (
     <DropdownMenuItem
@@ -59,6 +60,7 @@ export const DeleteDropdownItem = ({
         startTransition(async () => {
           await deleteProductById(id);
         });
+        router.refresh();
       }}
     >
       Delete
