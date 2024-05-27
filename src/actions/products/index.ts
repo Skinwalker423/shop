@@ -91,8 +91,6 @@ export const addProduct = async (
     image,
   });
 
-  console.log("parsed data", parsed.error);
-
   if (parsed.error) {
     return parsed.error.formErrors.fieldErrors;
   }
@@ -131,14 +129,6 @@ export const addProduct = async (
 
     redirect("/admin/products");
   }
-
-  // const data = await db.product.create({
-  //   data: {
-  //     name,
-
-  //   }
-  // });
-  // return data;
 };
 
 export const toggleProductAvailability = async (
