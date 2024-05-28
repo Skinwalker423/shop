@@ -9,17 +9,32 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency } from "@/lib/formatter";
 import { addProduct } from "@/actions/products";
 import { useFormState, useFormStatus } from "react-dom";
+import type { Product } from "@prisma/client";
+import Image from "next/image";
 
-export const ProductForm = () => {
-  const [priceInCents, setPriceInCents] =
-    useState<number>(0);
+interface ProductFormProps {
+  product?: Product | null;
+}
+
+export const ProductForm = ({
+  product,
+}: ProductFormProps) => {
+  const [priceInCents, setPriceInCents] = useState<number>(
+    product?.priceInCents || 0
+  );
   const [error, action] = useFormState(addProduct, {});
 
   return (
     <form action={action} className='space-y-8'>
       <div className='space-y-2'>
         <Label htmlFor='name'>Name</Label>
-        <Input id='name' name='name' type='text' required />
+        <Input
+          id='name'
+          name='name'
+          type='text'
+          required
+          defaultValue={product?.name || ""}
+        />
         {error?.name && <div>{error.name}</div>}
       </div>
       <div className='space-y-2'>
@@ -46,6 +61,7 @@ export const ProductForm = () => {
           name='description'
           required
           placeholder='A short description of the product to add'
+          defaultValue={product?.description || ""}
         />
         {error?.description && (
           <div>{error.description}</div>
@@ -53,7 +69,17 @@ export const ProductForm = () => {
       </div>
       <div className='space-y-2'>
         <Label htmlFor='file'>File</Label>
-        <Input type='file' id='file' name='file' required />
+        <Input
+          type='file'
+          id='file'
+          name='file'
+          required={product == null}
+        />
+        {product?.filePath && (
+          <p className='text-muted-foreground'>
+            {product.filePath}
+          </p>
+        )}
         {error?.file && <div>{error.file}</div>}
       </div>
       <div className='space-y-2'>
@@ -62,8 +88,18 @@ export const ProductForm = () => {
           type='file'
           id='image'
           name='image'
-          required
+          required={product == null}
         />
+        {product?.imagePath && (
+          <Image
+            src={product.imagePath}
+            alt='product image'
+            width={400}
+            height={400}
+            className='w-auto'
+            priority
+          />
+        )}
         {error?.image && <div>{error.image}</div>}
       </div>
       <SubmitButton />
