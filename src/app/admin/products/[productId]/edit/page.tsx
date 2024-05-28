@@ -1,5 +1,5 @@
 import { getProductById } from "@/actions/products";
-import React from "react";
+import { ProductForm } from "../../_components/ProductForm";
 
 const ProductEditPage = async ({
   params,
@@ -12,7 +12,7 @@ const ProductEditPage = async ({
 
   console.log("product", product);
 
-  return <div>ProductEditPage</div>;
+  return <ProductForm product={product} />;
 };
 
 export default ProductEditPage;
