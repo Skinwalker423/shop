@@ -157,3 +157,15 @@ export const deleteProductById = async (id: string) => {
   await fs.unlink(product.filePath);
   await fs.unlink(`public${product.imagePath}`);
 };
+
+export const getProductById = async (id: string) => {
+  const product = await db.product.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!product) return notFound();
+
+  return product;
+};
