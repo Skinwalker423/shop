@@ -99,7 +99,12 @@ export const ProductsTable = async () => {
                         Options
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
+                      <DropdownMenuItem
+                        disabled={
+                          !product.isAvailableForPurchase
+                        }
+                        asChild
+                      >
                         <a
                           download
                           href={`/admin/products/${product.id}/download`}
