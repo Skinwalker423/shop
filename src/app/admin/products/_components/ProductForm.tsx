@@ -7,7 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency } from "@/lib/formatter";
-import { addProduct } from "@/actions/products";
+import {
+  addProduct,
+  updateProduct,
+} from "@/actions/products";
 import { useFormState, useFormStatus } from "react-dom";
 import type { Product } from "@prisma/client";
 import Image from "next/image";
@@ -19,10 +22,14 @@ interface ProductFormProps {
 export const ProductForm = ({
   product,
 }: ProductFormProps) => {
+  const productAction = product
+    ? updateProduct.bind(null, product.id)
+    : addProduct;
+
   const [priceInCents, setPriceInCents] = useState<number>(
     product?.priceInCents || 0
   );
-  const [error, action] = useFormState(addProduct, {});
+  const [error, action] = useFormState(productAction, {});
 
   return (
     <form action={action} className='space-y-8'>
