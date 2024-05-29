@@ -79,7 +79,9 @@ export const ProductsTable = async () => {
                   {product.name}
                 </TableCell>
                 <TableCell>
-                  {formatCurrency(product.priceInCents)}
+                  {formatCurrency(
+                    product.priceInCents / 100 || 0
+                  )}
                 </TableCell>
                 <TableCell>
                   {product._count.orders}
