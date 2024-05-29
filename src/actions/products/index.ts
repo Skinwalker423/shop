@@ -131,6 +131,94 @@ export const addProduct = async (
   }
 };
 
+const updateProductSchema = addProductSchema.extend({
+  file: fileSchema.optional(),
+  image: imageSchema.optional(),
+});
+
+export const updateProduct = async (
+  id: string,
+  previousState: unknown,
+  formData: FormData
+) => {
+  const name = formData.get("name")?.toString();
+  const price = formData.get("price")?.toString() || "";
+  const description = formData
+    .get("description")
+    ?.toString();
+
+  const file = formData.get("file");
+  const image = formData.get("image");
+
+  const parsed = updateProductSchema.safeParse({
+    name,
+    price: parseInt(price),
+    description,
+    file,
+    image,
+  });
+
+  if (parsed.error) {
+    return parsed.error.formErrors.fieldErrors;
+  }
+
+  if (parsed.success) {
+    const data = parsed.data;
+
+    const product = await db.product.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (product == null) return notFound();
+
+    let filePath = product.filePath;
+    let imagePath = product.imagePath;
+
+    if (data.file != null && data.file?.size > 0) {
+      await fs.unlink(product.filePath);
+      await fs.mkdir("products", { recursive: true });
+      filePath = `products/${crypto.randomUUID()}-${
+        data.file.name
+      }`;
+      await fs.writeFile(
+        filePath,
+        Buffer.from(await data.file.arrayBuffer())
+      );
+    }
+
+    if (data.image != null && data.image.size > 0) {
+      await fs.unlink(`public${product.imagePath}`);
+      await fs.mkdir("public/products", {
+        recursive: true,
+      });
+      imagePath = `/products/${crypto.randomUUID()}-${
+        data.image.name
+      }`;
+      await fs.writeFile(
+        `public${imagePath}`,
+        Buffer.from(await data.image.arrayBuffer())
+      );
+    }
+
+    await db.product.update({
+      where: {
+        id,
+      },
+      data: {
+        name: data.name,
+        description: data.description,
+        priceInCents: data.price,
+        filePath,
+        imagePath,
+      },
+    });
+
+    redirect("/admin/products");
+  }
+};
+
 export const toggleProductAvailability = async (
   id: string,
   isAvailableForPurchase: boolean
