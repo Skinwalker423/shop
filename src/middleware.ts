@@ -36,6 +36,33 @@ const isAuthenticated = async (req: NextRequest) => {
   return false;
 };
 
+const hashPassword = async (password: string) => {
+  const arrayBuffer = await crypto.subtle.digest(
+    "SHA-512",
+    new TextEncoder().encode(password)
+  );
+
+  return Buffer.from(arrayBuffer).toString("base64");
+};
+
+const isValidPassword = async (
+  username: string,
+  password: string
+) => {
+  const adminUsername = process.env.ADMIN_USERNAME;
+  const adminPassword = process.env.HASHED_ADMIN_PASSWORD;
+  const hashedPassword = await hashPassword(password);
+
+  if (
+    username === adminUsername &&
+    hashedPassword === adminPassword
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 // See "Matching Paths" below to learn more
 export const config = {
   matcher: "/admin/:path*",
