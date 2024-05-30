@@ -4,9 +4,7 @@ import { NextRequest } from "next/server";
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   const newUrl = new URL("http://localhost:3000");
-  console.log("url", request.url);
   if ((await isAuthenticated(request)) === false) {
-    console.log("redirecting to basic auth");
     return new NextResponse("Unauthorized", {
       status: 401,
       headers: {
