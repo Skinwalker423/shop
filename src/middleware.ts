@@ -31,8 +31,10 @@ const isAuthenticated = async (req: NextRequest) => {
     .split(":");
   console.log("buffer", username, password);
 
-  if (authHeader === "admin") return true;
+  if (await isValidPassword(username, password))
+    return true;
 
+  console.log("incorrect credentials");
   return false;
 };
 
@@ -52,7 +54,7 @@ const isValidPassword = async (
   const adminUsername = process.env.ADMIN_USERNAME;
   const adminPassword = process.env.HASHED_ADMIN_PASSWORD;
   const hashedPassword = await hashPassword(password);
-
+  console.log("hashed pw", hashedPassword);
   if (
     username === adminUsername &&
     hashedPassword === adminPassword
