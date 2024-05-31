@@ -257,3 +257,20 @@ export const getProductById = async (id: string) => {
 
   return product;
 };
+
+export const getNewestProducts = async () => {
+  const products = await db.product.findMany({
+    where: {
+      isAvailableForPurchase: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+
+    take: 10,
+  });
+
+  console.log("newest products", products);
+
+  return products;
+};
