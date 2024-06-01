@@ -2,13 +2,15 @@ import {
   getNewestProducts,
   getPopularProducts,
 } from "@/actions/products";
+import { ProductCardSkeleton } from "@/components/ProductSkeleton";
+import { ProductsList } from "@/components/ProductsList";
 import { Button } from "@/components/ui/button";
 import { Product } from "@prisma/client";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 
-const ClientHomePage = async () => {
+const ClientHomePage = () => {
   return (
     <main className='space-y-12'>
       <ProductsGridSection
@@ -28,15 +30,10 @@ interface ProductsGridSectionProps {
   title: string;
 }
 
-const ProductsGridSection = async ({
+const ProductsGridSection = ({
   productFetcher,
   title,
 }: ProductsGridSectionProps) => {
-  const products = await productFetcher();
-  if (!products) return null;
-  const productsList = products.map((product) => {
-    return <div key={product.id}>{product.name}</div>;
-  });
   return (
     <section className='space-y-4'>
       <div className='flex gap-4 justify-between'>
@@ -48,9 +45,38 @@ const ProductsGridSection = async ({
           </Link>
         </Button>
       </div>
-      <ul>{productsList}</ul>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+        <Suspense
+          fallback={
+            <>
+              <ProductCardSkeleton />
+              <ProductCardSkeleton />
+              <ProductCardSkeleton />
+            </>
+          }
+        >
+          <ProductsList productFetcher={productFetcher} />
+        </Suspense>
+      </div>
     </section>
   );
 };
 
 export default ClientHomePage;
+
+// interface ProductsListProps {
+//   productFetcher: () => Promise<Product[]>;
+// }
+
+// const ProductsList = async ({
+//   productFetcher,
+// }: ProductsListProps) => {
+//   const products = await productFetcher();
+//   const productsList = products.map((product) => {
+//     return (
+//       <ProductCard key={product.id} product={product} />
+//     );
+//   });
+
+//   return productsList;
+// };
