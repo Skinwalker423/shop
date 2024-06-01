@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/formatter";
 import type { Product } from "@prisma/client";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 interface ProductCard {
   product: Product;
@@ -17,7 +18,14 @@ interface ProductCard {
 
 export const ProductCard = ({ product }: ProductCard) => {
   return (
-    <Card className='flex flex-col overflow-hidden'>
+    <Card className='flex flex-col overflow-hidden '>
+      <div className='relative w-full h-auto aspect-video'>
+        <Image
+          src={product.imagePath}
+          alt='product image'
+          fill
+        />
+      </div>
       <CardHeader>
         <CardTitle>{product.name}</CardTitle>
         <CardDescription>
