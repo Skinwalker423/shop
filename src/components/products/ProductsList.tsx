@@ -11,8 +11,6 @@ export const ProductsList = async ({
 }: ProductsListProps) => {
   const products = await productFetcher();
 
-  await new Promise((res) => setTimeout(res, 5000));
-
   const productsList = products.map((product) => {
     return (
       <ProductCard key={product.id} product={product} />

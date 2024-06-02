@@ -8,9 +8,10 @@ import {
 } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/formatter";
 import type { Product } from "@prisma/client";
-import { Button } from "./ui/button";
+
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "../ui/button";
 
 interface ProductCard {
   product: Product;
