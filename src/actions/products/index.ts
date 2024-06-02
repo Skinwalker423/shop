@@ -5,6 +5,8 @@ import { z } from "zod";
 import db from "../../../db";
 import fs from "fs/promises";
 import { notFound, redirect } from "next/navigation";
+import { cache } from "@/lib/cache";
+import { revalidatePath } from "next/cache";
 
 export const getProductsdata = async () => {
   const [activeProducts, inactiveProducts] =
@@ -42,7 +44,7 @@ export const getAllProducts = async () => {
   });
   return data;
 };
-export const getAllAvailableProducts = async () => {
+export const getAllAvailableProducts = cache(async () => {
   const data = await db.product.findMany({
     where: {
       isAvailableForPurchase: true,
@@ -52,7 +54,7 @@ export const getAllAvailableProducts = async () => {
     },
   });
   return data;
-};
+}, ["/products", "getAllAvailableProducts"]);
 
 const fileSchema = z.instanceof(File, {
   message: "file required",
@@ -137,7 +139,8 @@ export const addProduct = async (
         isAvailableForPurchase: false,
       },
     });
-
+    revalidatePath("/");
+    revalidatePath("/products");
     redirect("/admin/products");
   }
 };
@@ -225,7 +228,8 @@ export const updateProduct = async (
         imagePath,
       },
     });
-
+    revalidatePath("/");
+    revalidatePath("/products");
     redirect("/admin/products");
   }
 };
@@ -242,6 +246,8 @@ export const toggleProductAvailability = async (
       isAvailableForPurchase,
     },
   });
+  revalidatePath("/");
+  revalidatePath("/products");
 };
 
 export const deleteProductById = async (id: string) => {
@@ -255,6 +261,9 @@ export const deleteProductById = async (id: string) => {
 
   await fs.unlink(product.filePath);
   await fs.unlink(`public${product.imagePath}`);
+
+  revalidatePath("/");
+  revalidatePath("/products");
 };
 
 export const getProductById = async (id: string) => {
@@ -269,38 +278,50 @@ export const getProductById = async (id: string) => {
   return product;
 };
 
-export const getNewestProducts = async () => {
-  const products = await db.product.findMany({
-    where: {
-      isAvailableForPurchase: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-
-    take: 10,
-  });
-
-  console.log("newest products", products);
-
-  return products;
-};
-
-export const getPopularProducts = async () => {
-  const products = await db.product.findMany({
-    where: {
-      isAvailableForPurchase: true,
-    },
-    orderBy: {
-      orders: {
-        _count: "desc",
+export const getNewestProducts = cache(
+  async () => {
+    const products = await db.product.findMany({
+      where: {
+        isAvailableForPurchase: true,
       },
-    },
+      orderBy: {
+        createdAt: "desc",
+      },
 
-    take: 10,
-  });
+      take: 10,
+    });
 
-  console.log("newest products", products);
+    console.log("newest products", products);
 
-  return products;
-};
+    return products;
+  },
+  ["/", "getNewestProducts"],
+  {
+    revalidate: 60 * 60 * 24,
+  }
+);
+
+export const getPopularProducts = cache(
+  async () => {
+    const products = await db.product.findMany({
+      where: {
+        isAvailableForPurchase: true,
+      },
+      orderBy: {
+        orders: {
+          _count: "desc",
+        },
+      },
+
+      take: 10,
+    });
+
+    console.log("newest products", products);
+
+    return products;
+  },
+  ["/", "getPopularProducts"],
+  {
+    revalidate: 60 * 60 * 24,
+  }
+);
