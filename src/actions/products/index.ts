@@ -47,6 +47,9 @@ export const getAllAvailableProducts = async () => {
     where: {
       isAvailableForPurchase: true,
     },
+    orderBy: {
+      name: "asc",
+    },
   });
   return data;
 };
