@@ -42,6 +42,14 @@ export const getAllProducts = async () => {
   });
   return data;
 };
+export const getAllAvailableProducts = async () => {
+  const data = await db.product.findMany({
+    where: {
+      isAvailableForPurchase: true,
+    },
+  });
+  return data;
+};
 
 const fileSchema = z.instanceof(File, {
   message: "file required",
