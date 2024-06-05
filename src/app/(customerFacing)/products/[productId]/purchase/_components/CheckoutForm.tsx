@@ -7,6 +7,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { PaymentForm } from "./PaymentForm";
 import Image from "next/image";
+import { formatCurrency } from "@/lib/formatter";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
@@ -29,7 +30,20 @@ export const CheckoutForm = ({
             src={product.imagePath}
             alt={`product image of ${product.name}`}
             fill
+            className='object-cover'
           />
+        </div>
+        <div>
+          <div className='text-lg'>
+            {formatCurrency(product.priceInCents / 100)}
+          </div>
+          <h1 className='text-2xl font-bold'>
+            {product.name}
+          </h1>
+          <div className='line-clamp-3 text-muted-foreground'>
+            {product.description} df wefwe wef wefw efwef
+            wefwef wfwfwwef
+          </div>
         </div>
       </div>
       <Elements
