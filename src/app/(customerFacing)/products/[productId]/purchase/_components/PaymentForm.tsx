@@ -108,6 +108,7 @@ export const PaymentForm = ({
         options={paymentElementOptions}
       />
       <button
+        className='bg-primary text-primary-foreground px-4 py-2'
         disabled={isLoading || !stripe || !elements}
         id='submit'
       >
