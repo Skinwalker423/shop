@@ -58,6 +58,7 @@ export const CheckoutForm = ({
         <PaymentForm
           clientSecret={clientSecret}
           priceInCents={product.priceInCents}
+          productId={product.id}
         />
       </Elements>
     </div>

@@ -8,6 +8,7 @@ import {
   PaymentElement,
   useStripe,
   useElements,
+  LinkAuthenticationElement,
 } from "@stripe/react-stripe-js";
 import { StripePaymentElementOptions } from "@stripe/stripe-js";
 import {
@@ -25,6 +26,7 @@ import { formatCurrency } from "@/lib/formatter";
 interface FormProps {
   clientSecret: string;
   priceInCents: number;
+  productId: string;
 }
 
 export const PaymentForm = ({
@@ -37,6 +39,7 @@ export const PaymentForm = ({
     null
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState<string>();
 
   useEffect(() => {
     if (!stripe) {
@@ -76,13 +79,14 @@ export const PaymentForm = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!stripe || !elements) {
+    if (!stripe || !elements || !email) {
       // Stripe.js hasn't yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
-
     setIsLoading(true);
+
+    // check user order exists
 
     const { error } = await stripe.confirmPayment({
       elements,
@@ -121,23 +125,29 @@ export const PaymentForm = ({
       <Card>
         <CardHeader>
           <CardTitle>Card Title</CardTitle>
-          <CardDescription>
-            Card Description
-          </CardDescription>
+          {message && (
+            <CardDescription>{message}</CardDescription>
+          )}
         </CardHeader>
         <CardContent>
           <PaymentElement
             id='payment-element'
             options={paymentElementOptions}
           />
+          <div className='mt-4'>
+            <LinkAuthenticationElement
+              onChange={(e) => setEmail(e.value.email)}
+            />
+          </div>
         </CardContent>
         <CardFooter>
           <Button
             disabled={isLoading || !stripe || !elements}
             id='submit'
+            className='w-full'
           >
             {" "}
-            {!isLoading ? (
+            {isLoading ? (
               <Loader2 className='animate-spin' />
             ) : (
               `Purchase - ${formatCurrency(
@@ -145,9 +155,6 @@ export const PaymentForm = ({
               )}`
             )}
           </Button>
-          {message && (
-            <div id='payment-message'>{message}</div>
-          )}
         </CardFooter>
       </Card>
     </form>
