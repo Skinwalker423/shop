@@ -1,27 +1,44 @@
 "use client";
-import React, { FormEvent } from "react";
+import React, {
+  FormEvent,
+  useEffect,
+  useState,
+} from "react";
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
 import { StripePaymentElementOptions } from "@stripe/stripe-js";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { formatCurrency } from "@/lib/formatter";
 
 interface FormProps {
   clientSecret: string;
+  priceInCents: number;
 }
 
 export const PaymentForm = ({
   clientSecret,
+  priceInCents,
 }: FormProps) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [message, setMessage] = React.useState<
-    string | null
-  >(null);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [message, setMessage] = useState<string | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!stripe) {
       return;
     }
@@ -57,9 +74,7 @@ export const PaymentForm = ({
       });
   }, [stripe]);
 
-  const handleSubmit = async (
-    e: FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!stripe || !elements) {
       // Stripe.js hasn't yet loaded.
@@ -73,7 +88,7 @@ export const PaymentForm = ({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000",
+        return_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/stripe/purchase-success`,
       },
     });
 
@@ -103,25 +118,59 @@ export const PaymentForm = ({
 
   return (
     <form id='payment-form' onSubmit={handleSubmit}>
-      <PaymentElement
-        id='payment-element'
-        options={paymentElementOptions}
-      />
-      <button
-        className='bg-primary text-primary-foreground px-4 py-2'
-        disabled={isLoading || !stripe || !elements}
-        id='submit'
-      >
-        <span id='button-text'>
-          {isLoading ? (
-            <div className='spinner' id='spinner'></div>
-          ) : (
-            "Pay now"
+      <Card>
+        <CardHeader>
+          <CardTitle>Card Title</CardTitle>
+          <CardDescription>
+            Card Description
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PaymentElement
+            id='payment-element'
+            options={paymentElementOptions}
+          />
+        </CardContent>
+        <CardFooter>
+          <Button
+            disabled={isLoading || !stripe || !elements}
+            id='submit'
+          >
+            {" "}
+            {!isLoading ? (
+              <Loader2 className='animate-spin' />
+            ) : (
+              `Purchase - ${formatCurrency(
+                priceInCents / 100
+              )}`
+            )}
+          </Button>
+          {message && (
+            <div id='payment-message'>{message}</div>
           )}
-        </span>
-      </button>
-      {/* Show any error or success messages */}
-      {message && <div id='payment-message'>{message}</div>}
+        </CardFooter>
+      </Card>
     </form>
   );
 };
+
+{
+  /* <button
+className='bg-primary text-primary-foreground px-4 py-2 rounded-lg'
+disabled={isLoading || !stripe || !elements}
+id='submit'
+>
+<span id='button-text'>
+  {isLoading ? (
+    <div className='spinner' id='spinner'></div>
+  ) : (
+    `Purchase - ${formatCurrency(
+      priceInCents / 100
+    )}`
+  )}
+</span>
+</button> */
+}
+{
+  /* Show any error or success messages */
+}

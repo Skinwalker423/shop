@@ -55,7 +55,10 @@ export const CheckoutForm = ({
         }}
         stripe={stripePromise}
       >
-        <PaymentForm clientSecret={clientSecret} />
+        <PaymentForm
+          clientSecret={clientSecret}
+          priceInCents={product.priceInCents}
+        />
       </Elements>
     </div>
   );
