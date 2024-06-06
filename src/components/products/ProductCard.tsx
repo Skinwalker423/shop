@@ -20,7 +20,7 @@ interface ProductCard {
 export const ProductCard = ({ product }: ProductCard) => {
   return (
     <Card className='flex flex-col overflow-hidden '>
-      <div className='relative w-full h-auto aspect-video'>
+      <div className='relative w-full h-fit aspect-video'>
         <Image
           src={product.imagePath}
           alt='product image'

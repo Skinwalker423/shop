@@ -1,9 +1,5 @@
 "use client";
-import React, {
-  FormEvent,
-  useEffect,
-  useState,
-} from "react";
+import React, { FormEvent, useState } from "react";
 import {
   PaymentElement,
   useStripe,
@@ -25,13 +21,11 @@ import { formatCurrency } from "@/lib/formatter";
 import { userOrderExists } from "@/actions/orders";
 
 interface FormProps {
-  clientSecret: string;
   priceInCents: number;
   productId: string;
 }
 
 export const PaymentForm = ({
-  clientSecret,
   priceInCents,
   productId,
 }: FormProps) => {
@@ -42,42 +36,6 @@ export const PaymentForm = ({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState<string>();
-
-  useEffect(() => {
-    if (!stripe) {
-      return;
-    }
-
-    if (!clientSecret) {
-      return;
-    }
-
-    stripe
-      .retrievePaymentIntent(clientSecret)
-      .then(({ paymentIntent }) => {
-        if (!paymentIntent) {
-          setMessage("Something went wrong.");
-          return;
-        }
-
-        switch (paymentIntent.status) {
-          case "succeeded":
-            setMessage("Payment succeeded!");
-            break;
-          case "processing":
-            setMessage("Your payment is processing.");
-            break;
-          case "requires_payment_method":
-            setMessage(
-              "Your payment was not successful, please try again."
-            );
-            break;
-          default:
-            setMessage("Something went wrong.");
-            break;
-        }
-      });
-  }, [stripe]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
