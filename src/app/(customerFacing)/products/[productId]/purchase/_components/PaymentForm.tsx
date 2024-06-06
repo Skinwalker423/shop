@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/formatter";
+import { userOrderExists } from "@/actions/orders";
 
 interface FormProps {
   clientSecret: string;
@@ -32,6 +33,7 @@ interface FormProps {
 export const PaymentForm = ({
   clientSecret,
   priceInCents,
+  productId,
 }: FormProps) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -85,8 +87,19 @@ export const PaymentForm = ({
       return;
     }
     setIsLoading(true);
+    setMessage(null);
 
     // check user order exists
+    const orderExists = await userOrderExists(
+      email,
+      productId
+    );
+
+    if (orderExists) {
+      setMessage("Order exists. Download it in MyOrders");
+      setIsLoading(false);
+      return;
+    }
 
     const { error } = await stripe.confirmPayment({
       elements,
