@@ -15,3 +15,24 @@ export const getSalesData = async () => {
     count: data._count,
   };
 };
+
+export const userOrderExists = async (
+  email: string,
+  productId: string
+) => {
+  const order = await db.order.findFirst({
+    where: {
+      user: {
+        email,
+      },
+      productId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  console.log("order", order);
+
+  return !!order;
+};
