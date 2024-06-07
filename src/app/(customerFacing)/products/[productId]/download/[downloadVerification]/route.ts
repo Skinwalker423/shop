@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "../../../../../../../db";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import fs from "fs/promises";
 
 export const dynamic = "force-dynamic"; // defaults to auto
@@ -21,12 +21,16 @@ export async function GET(
     await db.downloadVerification.findUnique({
       where: {
         id: downloadVerification,
+        expriresAt: {
+          gte: new Date(),
+        },
       },
-      include: {
+      select: {
         product: {
           select: {
             filePath: true,
             name: true,
+            id: true,
           },
         },
       },
@@ -34,21 +38,20 @@ export async function GET(
 
   console.log(
     "vtid",
-    verificationToken?.productId,
+    verificationToken?.product.id,
     productId
   );
 
-  if (
-    verificationToken == null ||
-    verificationToken.productId !== productId
-  )
-    return notFound();
+  if (verificationToken == null)
+    return NextResponse.redirect(
+      new URL(
+        `/products/${productId}/download/expired`,
+        request.url
+      )
+    );
 
-  const today = new Date();
-
-  if (verificationToken.expriresAt < today) {
+  if (verificationToken.product.id !== productId)
     return notFound();
-  }
 
   const productFilepath =
     verificationToken.product.filePath;
