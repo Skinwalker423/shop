@@ -10,6 +10,8 @@ import {
   AlertTitle,
 } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY as string
@@ -77,6 +79,19 @@ const PurchaseSuccessPage = async ({
             {product.description} df wefwe wef wefw efwef
             wefwef wfwfwwef
           </div>
+          <Button className='mt-4' size={"lg"} asChild>
+            {isSuccess ? (
+              <a href={``} download>
+                Download
+              </a>
+            ) : (
+              <Link
+                href={`/products/${product.id}/purchase`}
+              >
+                Try Again
+              </Link>
+            )}
+          </Button>
         </div>
       </div>
     </div>
