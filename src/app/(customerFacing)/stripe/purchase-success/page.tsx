@@ -12,6 +12,8 @@ import {
 import { Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import db from "../../../../../db";
+import type { DownloadVerification } from "@prisma/client";
 
 const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY as string
@@ -41,6 +43,19 @@ const PurchaseSuccessPage = async ({
   if (product == null) return notFound();
 
   const isSuccess = paymentIntent.status === "succeeded";
+  let verificationToken: DownloadVerification | null = null;
+  if (isSuccess) {
+    const expiryDate = new Date(
+      Date.now() + 2 * (60 * 60 * 1000)
+    );
+    verificationToken =
+      await db.downloadVerification.create({
+        data: {
+          productId,
+          expriresAt: expiryDate,
+        },
+      });
+  }
 
   return (
     <div className='max-w-5xl mx-auto w-full space-y-8'>
@@ -80,8 +95,11 @@ const PurchaseSuccessPage = async ({
             wefwef wfwfwwef
           </div>
           <Button className='mt-4' size={"lg"} asChild>
-            {isSuccess ? (
-              <a href={``} download>
+            {isSuccess && verificationToken ? (
+              <a
+                href={`/products/${productId}/download/${verificationToken.id}`}
+                download
+              >
                 Download
               </a>
             ) : (
