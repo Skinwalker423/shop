@@ -3,7 +3,6 @@ import db from "../../../../../../db";
 import { notFound } from "next/navigation";
 import fs from "fs/promises";
 
-export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(
   request: NextRequest,
   {
