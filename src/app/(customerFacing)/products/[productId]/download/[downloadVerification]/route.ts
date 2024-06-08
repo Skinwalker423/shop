@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "../../../../../../../db";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import fs from "fs/promises";
 
 export const dynamic = "force-dynamic"; // defaults to auto
@@ -56,15 +56,6 @@ export async function GET(
   const productFilepath =
     verificationToken.product.filePath;
   const productName = verificationToken.product.name;
-  // const product = await db.product.findUnique({
-  //   where: { id: productId },
-  //   select: {
-  //     filePath: true,
-  //     name: true,
-  //   },
-  // });
-
-  if (productFilepath == null) return notFound();
 
   const { size } = await fs.stat(productFilepath);
   const file = await fs.readFile(productFilepath);
