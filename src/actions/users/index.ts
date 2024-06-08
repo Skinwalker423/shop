@@ -7,17 +7,30 @@ export const getUserData = async () => {
     db.user.count(),
     db.order.aggregate({
       _sum: {
-        pricePaidInCens: true,
+        pricePaidInCents: true,
       },
     }),
   ]);
 
-  const avg = totalSales._sum.pricePaidInCens
-    ? totalSales._sum.pricePaidInCens / userCount
+  const avg = totalSales._sum.pricePaidInCents
+    ? totalSales._sum.pricePaidInCents / userCount
     : 0;
 
   return {
     totalUsers: userCount,
     averageValuePerUser: avg,
   };
+};
+
+export const getUserIdByEmail = async (email: string) => {
+  const user = await db.user.findFirst({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return user?.id;
 };
