@@ -1,3 +1,4 @@
+import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getProductById } from "@/actions/products";
@@ -7,6 +8,8 @@ import db from "../../../../db";
 const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY as string
 );
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   const signature = request.headers.get(
@@ -53,5 +56,27 @@ export async function POST(request: NextRequest) {
           ),
         },
       });
+
+    await resend.emails.send({
+      from: "Acme <onboarding@resend.dev>",
+      to: ["delivered@resend.dev"],
+      subject: "hello world",
+      text: "it works!",
+      attachments: [
+        {
+          filename: product.filePath,
+          content: "",
+        },
+      ],
+      headers: {
+        "X-Entity-Ref-ID": "123456789",
+      },
+      tags: [
+        {
+          name: "category",
+          value: "confirm_email",
+        },
+      ],
+    });
   }
 }
