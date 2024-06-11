@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import { getProductById } from "@/actions/products";
 import { createOrderAndUpsertUser } from "@/actions/orders";
 import db from "../../../../db";
+import Email from "../../../../emails";
 
 const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY as string
@@ -61,7 +62,9 @@ export async function POST(request: NextRequest) {
       from: `Support <${process.env.SENDER_EMAIL}>`,
       to: email,
       subject: "Order Confirmation",
-      text: "it works!",
+      react: <Email />,
     });
   }
+
+  return new NextResponse();
 }
