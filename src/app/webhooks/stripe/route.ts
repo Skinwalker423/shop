@@ -57,26 +57,11 @@ export async function POST(request: NextRequest) {
         },
       });
 
-    await resend.emails.send({
-      from: "Acme <onboarding@resend.dev>",
-      to: ["delivered@resend.dev"],
-      subject: "hello world",
+    const confirmationEmail = await resend.emails.send({
+      from: `Support <${process.env.SENDER_EMAIL}>`,
+      to: email,
+      subject: "Order Confirmation",
       text: "it works!",
-      attachments: [
-        {
-          filename: product.filePath,
-          content: "",
-        },
-      ],
-      headers: {
-        "X-Entity-Ref-ID": "123456789",
-      },
-      tags: [
-        {
-          name: "category",
-          value: "confirm_email",
-        },
-      ],
     });
   }
 }
