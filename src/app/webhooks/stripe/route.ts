@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getProductById } from "@/actions/products";
 import { createOrderAndUpsertUser } from "@/actions/orders";
+import db from "../../../../db";
 
 const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY as string
@@ -42,5 +43,15 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("order", userOrder);
+
+    const downloadVerification =
+      await db.downloadVerification.create({
+        data: {
+          productId,
+          expriresAt: new Date(
+            Date.now() + 24 * 60 * 60 * 1000
+          ),
+        },
+      });
   }
 }
