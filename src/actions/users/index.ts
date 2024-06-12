@@ -50,4 +50,6 @@ export const getUsers = async () => {
       createdAt: "desc",
     },
   });
+
+  return users;
 };
