@@ -34,3 +34,20 @@ export const getUserIdByEmail = async (email: string) => {
 
   return user?.id;
 };
+
+export const getUsers = async () => {
+  const users = await db.user.findMany({
+    select: {
+      id: true,
+      email: true,
+      orders: {
+        select: {
+          pricePaidInCents: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
