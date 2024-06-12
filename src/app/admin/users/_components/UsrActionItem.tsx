@@ -7,12 +7,10 @@ import { useTransition } from "react";
 
 interface DeleteDropdownUserItemProps {
   userId: string;
-  disabled: boolean;
 }
 
 export const DeleteDropdownUserItem = ({
   userId,
-  disabled,
 }: DeleteDropdownUserItemProps) => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -20,7 +18,7 @@ export const DeleteDropdownUserItem = ({
   return (
     <DropdownMenuItem
       variant='destructive'
-      disabled={isPending || disabled}
+      disabled={isPending}
       onClick={() => {
         startTransition(async () => {
           await deleteUser(userId);
