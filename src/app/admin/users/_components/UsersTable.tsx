@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { getUsers } from "@/actions/users";
+import { DeleteDropdownUserItem } from "./UsrActionItem";
 
 export const UsersTable = async () => {
   const users = await getUsers();
@@ -76,7 +77,9 @@ export const UsersTable = async () => {
                       </span>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      Delete
+                      <DeleteDropdownUserItem
+                        userId={user.id}
+                      />
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
