@@ -34,16 +34,24 @@ export const OrderInformation = ({
     <Section>
       <Row>
         <Column>
-          <Text>Order Id</Text>
-          <Text>{order.id}</Text>
+          <Text className='text-gray-500 whitespace-nowrap text-nowrap mb-0'>
+            Order Id
+          </Text>
+          <Text className='mt-0 mr-4'>{order.id}</Text>
         </Column>
         <Column>
-          <Text>Purchased On</Text>
-          <Text>{formatDate(order.createdAt)}</Text>
+          <Text className='text-gray-500 whitespace-nowrap text-nowrap mb-0'>
+            Purchased On
+          </Text>
+          <Text className='mt-0 mr-4'>
+            {formatDate(order.createdAt)}
+          </Text>
         </Column>
         <Column>
-          <Text>Price Paid</Text>
-          <Text>
+          <Text className='text-gray-500 whitespace-nowrap text-nowrap mb-0'>
+            Price Paid
+          </Text>
+          <Text className='mt-0 mr-4'>
             {formatCurrency(order.pricePaidInCents / 100)}
           </Text>
         </Column>
