@@ -17,6 +17,14 @@ interface OrderInformationProps {
   downloadVerficationId: string;
 }
 
+function formatDate(date: Date) {
+  const formattedDate = new Intl.DateTimeFormat("en-us", {
+    dateStyle: "medium",
+  }).format(date);
+
+  return formattedDate;
+}
+
 export const OrderInformation = ({
   downloadVerficationId,
   order,
@@ -31,7 +39,7 @@ export const OrderInformation = ({
         </Column>
         <Column>
           <Text>Purchased On</Text>
-          <Text>{order.createdAt.toISOString()}</Text>
+          <Text>{formatDate(order.createdAt)}</Text>
         </Column>
         <Column>
           <Text>Price Paid</Text>
