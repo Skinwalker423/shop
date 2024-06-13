@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "email_dev": "email dev --port 5000"
+    "email_dev": "cp .env ./node_modules/react-email && email dev --port 5000"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.4.2",
