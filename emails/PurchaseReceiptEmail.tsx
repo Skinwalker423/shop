@@ -15,6 +15,8 @@ interface PurchaseReceiptEmailProps {
   product: {
     name: string;
     imagePath: string;
+    description: string;
+    id: string;
   };
   order: {
     id: string;
@@ -29,6 +31,8 @@ PurchaseReceiptEmail.PreviewProps = {
     name: "John Wick",
     imagePath:
       "/products/2593f051-3e82-4fc9-81cd-55a9400ce840-666.PNG",
+    description: "Image of John Wick",
+    id: "72a36261-09e2-47d0-a475-9118e974d2f6",
   },
   order: {
     id: "123",
