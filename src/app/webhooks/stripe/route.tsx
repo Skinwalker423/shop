@@ -5,6 +5,7 @@ import { getProductById } from "@/actions/products";
 import { createOrderAndUpsertUser } from "@/actions/orders";
 import db from "../../../../db";
 import Email from "../../../../emails";
+import PurchaseReceiptEmail from "../../../../emails/PurchaseReceiptEmail";
 
 const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY as string
@@ -62,7 +63,13 @@ export async function POST(request: NextRequest) {
       from: `Support <${process.env.SENDER_EMAIL}>`,
       to: email,
       subject: "Order Confirmation",
-      react: <Email />,
+      react: (
+        <PurchaseReceiptEmail
+          product={product}
+          order={userOrder}
+          downloadVerificationId={downloadVerification.id}
+        />
+      ),
     });
   }
 
