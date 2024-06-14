@@ -6,6 +6,8 @@ import {
   Column,
   Text,
   Img,
+  Button,
+  Link,
 } from "@react-email/components";
 
 interface OrderInformationProps {
@@ -17,6 +19,8 @@ interface OrderInformationProps {
   product: {
     imagePath: string;
     name: string;
+    description: string;
+    id: string;
   };
   downloadVerficationId: string;
 }
@@ -67,7 +71,23 @@ export const OrderInformation = ({
           width={"100%"}
           className='aspect-video'
           src={`${process.env.NEXT_PUBLIC_SERVER_URL}${product.imagePath}`}
+          alt={product.description}
         />
+        <Row className='mt-8'>
+          <Column className='align-bottom'>
+            <Text className='text-lg m-0 font-bold mr-4'>
+              {product.name}
+            </Text>
+          </Column>
+          <Column align='right'>
+            <Button
+              href={`${process.env.NEXT_PUBLIC_SERVER_URL}/products/${product.id}/download/${downloadVerficationId}`}
+              className='bg-black text-white px-6 py-4 rounded text-lg'
+            >
+              Download
+            </Button>
+          </Column>
+        </Row>
       </Section>
     </>
   );
