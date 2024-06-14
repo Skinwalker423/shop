@@ -14,6 +14,7 @@ import { OrderInformation } from "./components/OrderInformation";
 interface PurchaseReceiptEmailProps {
   product: {
     name: string;
+    imagePath: string;
   };
   order: {
     id: string;
@@ -24,7 +25,11 @@ interface PurchaseReceiptEmailProps {
 }
 
 PurchaseReceiptEmail.PreviewProps = {
-  product: { name: "John Wick" },
+  product: {
+    name: "John Wick",
+    imagePath:
+      "/products/2593f051-3e82-4fc9-81cd-55a9400ce840-666.PNG",
+  },
   order: {
     id: "123",
     createdAt: new Date(),
