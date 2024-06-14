@@ -64,5 +64,15 @@ export const createOrderAndUpsertUser = async ({
     },
     create: userFields,
     update: userFields,
+    select: {
+      orders: {
+        orderBy: {
+          createdAt: "asc",
+        },
+        take: 1,
+      },
+    },
   });
+
+  return updatedUserOrder.orders[0];
 };
