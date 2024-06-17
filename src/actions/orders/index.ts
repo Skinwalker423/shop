@@ -93,7 +93,34 @@ export const emailOrderHistory = async (
     email: formData.get("email")?.toString(),
   });
 
-  if (result.error) return { error: result.error.message };
+  if (result.success === false)
+    return { error: result.error.message };
+
+  const user = await db.user.findUnique({
+    where: {
+      email: result.data,
+    },
+    select: {
+      email: true,
+
+      orders: {
+        select: {
+          createdAt: true,
+          id: true,
+          pricePaidInCents: true,
+
+          product: {
+            select: {
+              name: true,
+              imagePath: true,
+              id: true,
+              description: true,
+            },
+          },
+        },
+      },
+    },
+  });
 
   return { message: "test" };
 };
