@@ -2,6 +2,9 @@
 
 import { z } from "zod";
 import db from "../../../db";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const getSalesData = async () => {
   const data = await db.order.aggregate({
@@ -122,5 +125,33 @@ export const emailOrderHistory = async (
     },
   });
 
-  return { message: "test" };
+  if (user == null) {
+    return { message: "Check your email for more info" };
+  }
+
+  const orders = user.orders.map((order) => {
+    const downloadVerification =
+      db.downloadVerification.create({
+        data: {
+          productId: order.product.id,
+          expriresAt: new Date(
+            Date.now() + 24 * 1000 * 60 * 60
+          ),
+        },
+      });
+  });
+
+  const resendRes = await resend.emails.send({
+    from: `Support <${process.env.SENDER_EMAIL as string}>`,
+    to: user.email,
+    subject: "Order History",
+    react: <p>Test</p>,
+  });
+
+  // create jsx <OrderHistoryEmail />
+
+  if (resendRes.error)
+    return { error: resendRes.error.message };
+
+  return { message: "Successully Sent " };
 };
