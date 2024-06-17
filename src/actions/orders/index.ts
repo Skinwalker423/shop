@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import db from "../../../db";
 
 export const getSalesData = async () => {
@@ -75,4 +76,24 @@ export const createOrderAndUpsertUser = async ({
   });
 
   return updatedUserOrder.orders[0];
+};
+
+type OrderHistory = {
+  message?: string;
+  error?: string;
+};
+
+const emailSchema = z.string().email();
+
+export const emailOrderHistory = async (
+  prevtate: unknown,
+  formData: FormData
+): Promise<OrderHistory> => {
+  const result = emailSchema.safeParse({
+    email: formData.get("email")?.toString(),
+  });
+
+  if (result.error) return { error: result.error.message };
+
+  return { message: "test" };
 };
