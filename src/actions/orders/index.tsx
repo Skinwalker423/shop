@@ -3,6 +3,7 @@
 import { z } from "zod";
 import db from "../../../db";
 import { Resend } from "resend";
+import OrderHistoryEmail from "../../../emails/OrderHistoryEmail";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -130,22 +131,34 @@ export const emailOrderHistory = async (
   }
 
   const orders = user.orders.map((order) => {
-    const downloadVerification =
-      db.downloadVerification.create({
+    let downloadVerificationId = "";
+    const downloadVerification = db.downloadVerification
+      .create({
         data: {
           productId: order.product.id,
           expriresAt: new Date(
             Date.now() + 24 * 1000 * 60 * 60
           ),
         },
+      })
+      .then((data) => {
+        downloadVerificationId = data.id;
       });
+
+    return {
+      id: order.id,
+      createdAt: order.createdAt,
+      pricePaidInCents: order.pricePaidInCents,
+      product: order.product,
+      downloadVerificationId: downloadVerificationId,
+    };
   });
 
   const resendRes = await resend.emails.send({
     from: `Support <${process.env.SENDER_EMAIL as string}>`,
     to: user.email,
     subject: "Order History",
-    react: <p>Test</p>,
+    react: <OrderHistoryEmail orders={orders} />,
   });
 
   // create jsx <OrderHistoryEmail />
