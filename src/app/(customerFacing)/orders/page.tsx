@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -11,10 +13,16 @@ import { Label } from "@/components/ui/label";
 
 import React from "react";
 import { SubmitButton } from "./_components/SubmitButton";
+import { emailOrderHistory } from "@/actions/orders";
+import { useFormState } from "react-dom";
 
 const OrdersPage = () => {
+  const [state, formAction] = useFormState(
+    emailOrderHistory,
+    {}
+  );
   return (
-    <form action=''>
+    <form action={formAction}>
       <Card>
         <CardHeader>
           <CardTitle>My Orders</CardTitle>
@@ -31,9 +39,18 @@ const OrdersPage = () => {
             name='email'
             id='email'
           />
+          {state.error && (
+            <div className='px-4 py-2 text-destructive'>
+              {state.error}
+            </div>
+          )}
         </CardContent>
         <CardFooter>
-          <SubmitButton />
+          {state.message ? (
+            <p>{state.message}</p>
+          ) : (
+            <SubmitButton />
+          )}
         </CardFooter>
       </Card>
     </form>
