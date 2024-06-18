@@ -7,6 +7,7 @@ import {
   Tailwind,
   Preview,
   Container,
+  Hr,
 } from "@react-email/components";
 import * as React from "react";
 import { OrderInformation } from "./components/OrderInformation";
@@ -81,15 +82,18 @@ export default function OrderHistoryEmail({
         <Body>
           <Container className='max-w-xl border border-red-500'>
             <Heading>Order History</Heading>
-            {orders.map((order) => {
+            {orders.map((order, index) => {
               return (
-                <OrderInformation
-                  downloadVerficationId={
-                    order.downloadVerificationId
-                  }
-                  order={order}
-                  product={order.product}
-                />
+                <React.Fragment key={order.id}>
+                  <OrderInformation
+                    downloadVerficationId={
+                      order.downloadVerificationId
+                    }
+                    order={order}
+                    product={order.product}
+                  />
+                  {index < orders.length - 1 && <Hr />}
+                </React.Fragment>
               );
             })}
             <Button
